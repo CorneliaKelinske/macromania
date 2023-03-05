@@ -1,9 +1,17 @@
+#---
+# Excerpted from "Metaprogramming Elixir",
+# published by The Pragmatic Bookshelf.
+# Copyrights apply to this code. It may not be used to create training material, 
+# courses, books, articles, and the like. Contact us if you are in doubt.
+# We make no guarantees that this code is fit for any purpose. 
+# Visit http://www.pragmaticprogrammer.com/titles/cmelixir for more book information.
+#---
 defmodule Translator do
 
   defmacro __using__(_options) do
     quote do
-      Module.register_attribute(__MODULE__, :locales, accumulate: true, persist: false)
-
+      Module.register_attribute __MODULE__, :locales, accumulate: true,
+                                                      persist: false
       import unquote(__MODULE__), only: [locale: 2]
       @before_compile unquote(__MODULE__)
     end
@@ -49,16 +57,16 @@ defmodule Translator do
     end
   end
 
-  defp interpolate(string) do
+  defp interpolate(string) do 
     ~r/(?<head>)%{[^}]+}(?<tail>)/
     |> Regex.split(string, on: [:head, :tail])
     |> Enum.reduce "", fn
       <<"%{" <> rest>>, acc ->
         key = String.to_atom(String.rstrip(rest, ?}))
-        quote do
+        quote do 
           unquote(acc) <> to_string(Dict.fetch!(bindings, unquote(key)))
         end
-      segment, acc -> quote do: (unquote(acc) <> unquote(segment))
+      segment, acc -> quote do: (unquote(acc) <> unquote(segment)) 
     end
   end
 
